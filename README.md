@@ -400,21 +400,22 @@ python -m src.eval
 
 ## 8. Interactive Chat Demo & Screenshots
 
-### 🎥 Live Video Walkthrough
-<video src="Aster%20%26%20Row%20-%20AI%20Support%20Assistant%20.mp4" controls="controls" style="max-width: 100%; border-radius: 12px;"></video>
+### 🎥 Video Walkthrough
+* 📥 **[Click here to watch / download the full video recording: demo-recording.mp4](demo-recording.mp4)**
 
 ---
 
 ### 📸 Interface Screenshots
 
 #### 1. Policy & Standard Return Inquiries
-![Standard Return Query](Screenshot%201.png)
+![Standard Return Query](screenshot-1.png)
 
 #### 2. Member Benefits & Status Tracking
-![Member Benefits & Order Tracking](Screenshot%202.png)
+![Member Benefits & Order Tracking](screenshot-2.png)
 
 #### 3. Exception Handling & Support Escalation
-![Exception Status & Escalation](Screenshot%203.png)
+![Exception Status & Escalation](screenshot-3.png)
 
 #### 4. Safeguards, Data Privacy & Prompt Defenses
-![Privacy Protection & Safeguards](Screenshot%205.png)
+![Privacy Protection & Safeguards](screenshot-5.png)
+
