@@ -402,4 +402,4 @@ python -m src.eval
 
 Below is the recording of the RAG assistant resolving standard return windows, damaged final-sale exceptions (showing handoff and dual citations), data privacy blocks, and unapproved prompt-injection instructions:
 
-![Aster & Row Support AI Demo](./demo.webp)
+![Aster & Row Support AI Demo](demo.gif)
