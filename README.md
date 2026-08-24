@@ -398,8 +398,23 @@ python -m src.eval
 
 ---
 
-## 8. Interactive Chat Demo
+## 8. Interactive Chat Demo & Screenshots
 
-Below is the recording of the RAG assistant resolving standard return windows, damaged final-sale exceptions (showing handoff and dual citations), data privacy blocks, and unapproved prompt-injection instructions:
+### 🎥 Live Video Walkthrough
+<video src="Aster%20%26%20Row%20-%20AI%20Support%20Assistant%20.mp4" controls="controls" style="max-width: 100%; border-radius: 12px;"></video>
 
-![Aster & Row Support AI Demo](demo.gif)
+---
+
+### 📸 Interface Screenshots
+
+#### 1. Policy & Standard Return Inquiries
+![Standard Return Query](Screenshot%201.png)
+
+#### 2. Member Benefits & Status Tracking
+![Member Benefits & Order Tracking](Screenshot%202.png)
+
+#### 3. Exception Handling & Support Escalation
+![Exception Status & Escalation](Screenshot%203.png)
+
+#### 4. Safeguards, Data Privacy & Prompt Defenses
+![Privacy Protection & Safeguards](Screenshot%205.png)
