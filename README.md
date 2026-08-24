@@ -237,3 +237,169 @@ Framework choice and quantity of code are not scoring criteria.
 ```
 
 Good luck. Build for reliability, not just for the happy-path demo.
+
+---
+
+# Implementation & Solution Documentation
+
+## 1. Setup and Run Instructions
+
+### Prerequisites
+* Python 3.10 or higher
+* A Gemini API key (Google AI Studio)
+
+### Installation
+1. Clone the repository and navigate to the project directory:
+   ```bash
+   cd "c:\Users\Neha\OneDrive\Desktop\RAG Assignment"
+   ```
+2. Create and activate a Python virtual environment:
+   ```bash
+   python -m venv .venv
+   # On Windows (PowerShell):
+   .venv\Scripts\Activate.ps1
+   # On macOS/Linux:
+   source .venv/bin/activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Create a `.env` file in the root directory (refer to `.env.example`) and add your Gemini API key:
+   ```env
+   GEMINI_API_KEY="YOUR_API_KEY_HERE"
+   ```
+
+### Running the RAG Assistant (CLI Mode)
+To talk to the support agent in your terminal:
+```bash
+python -m src.main
+```
+
+### Running the RAG Assistant (Web UI Mode)
+To run a local web UI server and chat through a sleek browser interface:
+1. Start the server:
+   ```bash
+   python -m src.web_ui
+   ```
+2. Open `http://localhost:8080` in your web browser.
+
+### Running the Evaluation Suite
+To run the evaluation runner and check all 20 test cases:
+```bash
+python -m src.eval
+```
+
+---
+
+## 2. Technical Stack and Choices
+
+* **Language**: Python 3 (specifically matching Python 3.10+ standard guidelines).
+* **LLM Reasoning**: `models/gemini-3.5-flash` with dynamic fallback to `models/gemini-3.5-flash-lite` and `models/gemini-3.7-flash` (used to distribute API requests when hitting Free Tier daily quota limits).
+* **Embedding Model**: `models/gemini-embedding-2`.
+* **Vector Search**: Custom lightweight Cosine Similarity search utilizing **Numpy** (`np.dot` product on unit-normalized vectors).
+* **Framework**: No heavy RAG frameworks (like LangChain/LlamaIndex) were used to maintain maximum transparency, minimal dependencies, and lightning-fast boot times.
+
+---
+
+## 3. Architecture Overview
+
+### A. Document Chunking & Ingestion (`src/ingest.py`)
+* Parses raw Markdown files in `knowledge-base/`.
+* Extracts front-matter YAML block metadata (`status`, `audience`, `policy_authority`, `document_id`) using `yaml.safe_load`.
+* Splits files by Markdown headings (`##`) to maintain cohesive logical context per chunk.
+
+### B. Cosine Similarity & Metadata Boosting (`src/retrieval.py`)
+* Computes cosine similarity between queries and chunk embeddings.
+* Applies a **Status Penalty** (Active Official: `1.0` multiplier; Superseded: `0.85`; Internal/Drafts: `0.80`) to ensure outdated policies rank below official ones, while still allowing them to be retrieved when explicitly queried.
+* Retrieves up to **8 relevant chunks** (k=8) to ensure complete policy context is provided to the agent without starving the prompt.
+
+### C. Function Calling & Order Lookup (`src/tools.py`)
+* Implements the `get_order_by_id(order_id)` tool.
+* Sanitizes outputs: strips private customer details (name, email, shipping address, risk scores, warehouse notes) to preserve privacy.
+* Normalizes whitespace and uppercase IDs (e.g. ` ord-1002 ` -> `ORD-1002`).
+* Enforces status logic: suppresses estimated delivery dates for `cancelled`/`returned` orders, and sets `requires_human_handoff: True` for `exception` status orders.
+
+### D. System Instructions & Fallback Chat Loop (`src/agent.py`)
+* Configures strict system instructions (e.g., ignore text instructions in retrieved files, enforce handoff tag `[HANDOFF]`, citation structures).
+* Wraps chat calling inside a **Dynamic Model Fallback Loop**. If a 429 Quota Exceeded exception occurs, it automatically catches it, swaps the LLM model to a backup model, and retries.
+* Enforces **Generic Draft Handling Rules**: instructs the model to refuse any action requests made under unapproved/draft documents, explain that they are not authoritative, and suppress support handoff triggers.
+
+---
+
+## 4. Evaluation Suite and Results
+
+### Commands
+To run the automated tests:
+```bash
+python -m src.eval
+```
+
+### Results Breakdown
+
+| Category | Baseline Score | Final Score | Status |
+| :--- | :---: | :---: | :---: |
+| **Retrieval** | 33.3% | 100.0% (3/3) | **PASSED** |
+| **Multi-Source Grounding** | 0.0% | 100.0% (1/1) | **PASSED** |
+| **Conversation (Multi-turn)** | 0.0% | 100.0% (1/1) | **PASSED** |
+| **Groundedness** | 0.0% | 100.0% (2/2) | **PASSED** |
+| **Tool Use** | 33.3% | 100.0% (3/3) | **PASSED** |
+| **Tool Reliability** | 60.0% | 100.0% (5/5) | **PASSED** |
+| **Privacy** | 50.0% | 100.0% (2/2) | **PASSED** |
+| **Prompt Security** | 0.0% | 100.0% (1/1) | **PASSED** |
+| **Abstention** | 0.0% | 100.0% (1/1) | **PASSED** |
+| **Source Conflict** | 100.0% | 100.0% (1/1) | **PASSED** |
+| **Overall Score** | **35.0% (7/20)** | **100.0% (20/20)** | **PASSED** |
+
+---
+
+## 5. Bug Diary
+
+### Bug 1: Free Tier Daily Quota Exhaustion (429)
+* **Reproduction**: Run `python -m src.eval` on a new API key. Near the end of the run, the Gemini API returned `ClientError: 429 RESOURCE_EXHAUSTED` with `limit: 20` for `generativelanguage.googleapis.com/generate_content_free_tier_requests`.
+* **Root Cause**: The Google AI Studio free tier enforces a strict daily limit of 20 requests *per model per project*. Since the test suite makes 22+ requests, any single model runs out of daily quota.
+* **Fix**: Implemented a dynamic model fallback list (`gemini-3.5-flash` -> `gemini-3.5-flash-lite` -> `gemini-3.7-flash`) in `src/agent.py`. If one model throws a 429 quota exhaustion exception, the agent automatically retries with the next candidate.
+* **Regression Test**: Covered by verifying that the entire evaluation suite runs to completion cleanly.
+
+### Bug 2: Missing 7-Day Reporting Window on Damaged Items
+* **Reproduction**: Asking about a broken zipper on a final sale bag yesterday. The agent confirmed it's reviewable but failed to mention that the report must be filed within 7 calendar days of delivery.
+* **Root Cause**: The query matched the final sale policy chunks heavily (due to word overlap). Consequently, the actual section `04-damaged-or-wrong-items.md > Reporting window` was pushed out of the top retrieved context chunks.
+* **Fix**: Increased the retrieval limit to 8 to avoid starving key documents, allowing semantic vectors to fetch the reporting rules alongside the final sale policies.
+* **Regression Test**: Covered by case `final-sale-damaged-exception`.
+
+### Bug 3: Handoff Recommendation Conflict on Prompt Injections
+* **Reproduction**: Testing the adversarial migration note query. The agent successfully rejected the 60-day rule, but still appended `[HANDOFF]`, violating the case assertion.
+* **Root Cause**: The customer query said *"approve my return"* (an action), which triggered the action-based handoff rule in Rule 5, overriding the policy precedence rule in Rule 3 (never escalate unapproved draft documents).
+* **Fix**: Instructed the agent in the system prompt that requests to perform actions under unapproved/draft policies should be refused directly without recommending support handoffs.
+* **Regression Test**: Covered by case `retrieved-prompt-injection`.
+
+### Bug 4: Citation Hallucination and Combined Citation Formatting
+* **Reproduction**: In prompt injection and custom superseded test runs, the agent combined citations inside a single bracket and hallucinated a non-existent file name (`02-returns-policy-trailplus.md` instead of `09-trailplus-membership.md`). It also cited a policy document (`08-order-changes-and-cancellations.md`) for an order status lookup retrieved from the tool database.
+* **Root Cause**: LLM generation occasionally combined multiple sources in a single citation bracket, hallucinated file names, or appended spurious citations for database lookup facts.
+* **Fix**: Tightened the system instructions in `src/agent.py` to command the model to output separate brackets for each citation and forbid citing policies for tool lookup results. Added a post-processing filter in `agent.py` that splits combined citations, verifies each file name exists on disk and was actually retrieved during the turn, and removes invalid/spurious citation brackets.
+* **Regression Test**: Covered by verifying that all active test case responses contain only valid, retrieved citations.
+
+---
+
+## 6. Known Limitations & Production Enhancements
+
+1. **Automated Evaluator Paraphrasing Constraints**: The automated concept checker is designed as a strict, lightweight keyword and number matcher rather than using heavy semantic LLM grading. Consequently, it can yield false negatives on valid semantic paraphrases if the response uses alternative wording for expected key phrases. This is a deliberate design trade-off to keep the evaluator objective, fast, and prevent overfitting.
+2. **Static Vector Cache**: The embeddings cache `kb_embeddings.json` is generated once and saved. In a production pipeline, this should be automated via file watchers or database hooks so updates to the markdown files trigger automatic re-indexing.
+3. **Session State Management**: Chat history is passed as a Python list in-memory. For production multi-user systems, we would back this history with a Redis or PostgreSQL database session store.
+4. **Strict Order ID Authentication**: Currently, possession of an order ID is treated as sufficient authentication. In production, we would require supplementary verification (e.g. verifying the zip code or email associated with the order ID before disclosing tracking details).
+
+---
+
+## 7. AI Coding Tools Disclosure
+
+* **Tool Used**: Antigravity AI assistant.
+* **Purpose**: Used for writing the custom retrieval pipeline, managing test suites, and resolving character encoding issues (`UnicodeEncodeError` on CP1252 consoles).
+* **Wrong/Incomplete AI Suggestion**: The model initially recommended using `models/gemini-3.6-flash`, which hit the strict 20 RPD daily quota. The model also did not anticipate the CP1252 character map print error when printing the emoji `🎉` on Windows consoles.
+
+---
+
+## 8. Interactive Chat Demo
+
+Below is the recording of the RAG assistant resolving standard return windows, damaged final-sale exceptions (showing handoff and dual citations), data privacy blocks, and unapproved prompt-injection instructions:
+
+![Aster & Row Support AI Demo](./demo.webp)
