@@ -10,17 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0d19;
-            --panel-bg: rgba(22, 28, 45, 0.45);
-            --panel-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --primary: #5865f2;
-            --primary-glow: rgba(88, 101, 242, 0.45);
-            --accent: #10b981;
-            --accent-glow: rgba(16, 185, 129, 0.2);
+            --bg-color: #f1f5f9;
+            --panel-bg: #ffffff;
+            --panel-border: #e2e8f0;
+            --sidebar-bg: #f8fafc;
+            --chat-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.2);
+            --accent: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
             --danger: #ef4444;
-            --danger-glow: rgba(239, 68, 68, 0.25);
+            --danger-glow: rgba(239, 68, 68, 0.1);
             --font-main: 'Plus Jakarta Sans', sans-serif;
             --font-header: 'Outfit', sans-serif;
         }
@@ -34,8 +37,8 @@
         body {
             background-color: var(--bg-color);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(88, 101, 242, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
             color: var(--text-main);
             font-family: var(--font-main);
             min-height: 100vh;
@@ -46,28 +49,26 @@
         }
 
         .app-container {
-            width: 90%;
-            max-width: 1100px;
-            height: 85vh;
+            width: 92%;
+            max-width: 1150px;
+            height: 88vh;
             background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--panel-border);
             border-radius: 24px;
             display: flex;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04);
             overflow: hidden;
         }
 
         /* Sidebar styling */
         .sidebar {
-            width: 320px;
+            width: 330px;
             border-right: 1px solid var(--panel-border);
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
-            background: rgba(10, 12, 22, 0.6);
+            gap: 20px;
+            background: var(--sidebar-bg);
         }
 
         .brand {
@@ -77,27 +78,33 @@
         }
 
         .brand-logo {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 10px;
-            box-shadow: 0 0 15px var(--primary-glow);
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #2563eb, #0284c7);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-family: var(--font-header);
         }
 
         .brand-name {
             font-family: var(--font-header);
-            font-size: 20px;
+            font-size: 21px;
             font-weight: 700;
-            letter-spacing: 0.5px;
-            background: linear-gradient(to right, #ffffff, #9ca3af);
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .sidebar-title {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             color: var(--text-muted);
             margin-bottom: 8px;
             font-weight: 700;
@@ -113,23 +120,26 @@
         }
 
         .pill-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: #ffffff;
             border: 1px solid var(--panel-border);
             color: var(--text-main);
-            padding: 12px 16px;
-            border-radius: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
             text-align: left;
-            font-size: 13px;
+            font-size: 12.5px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: var(--font-main);
             line-height: 1.4;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
         }
 
         .pill-btn:hover {
-            background: rgba(88, 101, 242, 0.1);
+            background: #eff6ff;
             border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(88, 101, 242, 0.2);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
             transform: translateY(-1px);
         }
 
@@ -147,22 +157,23 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 500;
+            font-weight: 600;
+            color: #1e293b;
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
-            background: var(--accent);
+            background: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent);
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
-            100% { opacity: 0.5; }
+            0% { opacity: 0.6; }
+            50% { opacity: 1; box-shadow: 0 0 10px rgba(16, 185, 129, 0.9); }
+            100% { opacity: 0.6; }
         }
 
         /* Chat Panel styling */
@@ -170,27 +181,29 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(13, 17, 30, 0.2);
+            background: var(--chat-bg);
         }
 
         .chat-header {
-            padding: 24px;
+            padding: 20px 28px;
             border-bottom: 1px solid var(--panel-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: #ffffff;
         }
 
         .agent-info {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
         .agent-name {
             font-family: var(--font-header);
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
+            color: #0f172a;
         }
 
         .agent-desc {
@@ -200,12 +213,13 @@
 
         .chat-history {
             flex-grow: 1;
-            padding: 24px;
+            padding: 28px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
             scroll-behavior: smooth;
+            background: #f8fafc;
         }
 
         .msg-row {
@@ -222,37 +236,40 @@
         }
 
         .bubble {
-            max-width: 70%;
+            max-width: 72%;
             padding: 16px 20px;
             border-radius: 18px;
-            line-height: 1.5;
+            line-height: 1.55;
             font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
             animation: slideIn 0.3s ease-out;
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .msg-row.user .bubble {
-            background: var(--primary);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: #ffffff;
             border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
         }
 
         .msg-row.assistant .bubble {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--panel-border);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             color: var(--text-main);
             border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         /* Sources and Citations UI */
         .msg-meta {
-            margin-top: 10px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #f1f5f9;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -260,10 +277,10 @@
 
         .citations-title {
             font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-weight: 700;
+            color: #64748b;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
         }
 
         .citations-list {
@@ -273,16 +290,16 @@
         }
 
         .citation-pill {
-            background: rgba(88, 101, 242, 0.12);
-            border: 1px solid rgba(88, 101, 242, 0.3);
-            color: #b5bdff;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
             font-size: 11px;
             padding: 4px 10px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 6px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .citation-pill svg {
@@ -292,47 +309,41 @@
         }
 
         .handoff-alert {
-            background: var(--danger-glow);
-            border: 1px solid var(--danger);
-            color: #ff9999;
-            font-size: 12px;
-            padding: 8px 12px;
-            border-radius: 8px;
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #b91c1c;
+            font-size: 12.5px;
+            padding: 9px 14px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 600;
             margin-top: 12px;
-            animation: pulse-border 1.5s infinite alternate;
-        }
-
-        @keyframes pulse-border {
-            from { border-color: rgba(239, 68, 68, 0.4); }
-            to { border-color: rgba(239, 68, 68, 1); }
         }
 
         /* Input area */
         .chat-input-area {
-            padding: 24px;
+            padding: 20px 28px;
             border-top: 1px solid var(--panel-border);
-            background: rgba(10, 12, 22, 0.4);
+            background: #ffffff;
         }
 
         .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--panel-border);
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
             border-radius: 16px;
-            padding: 4px;
-            transition: all 0.3s;
+            padding: 4px 6px;
+            transition: all 0.25s ease;
         }
 
         .input-wrapper:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px var(--primary-glow);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
         }
 
         .chat-input {
@@ -342,35 +353,36 @@
             color: var(--text-main);
             font-family: var(--font-main);
             font-size: 14px;
-            padding: 14px 18px;
+            padding: 12px 16px;
             outline: none;
         }
 
         .chat-input::placeholder {
-            color: var(--text-muted);
+            color: #94a3b8;
         }
 
         .send-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             border: none;
             color: white;
-            padding: 12px 24px;
+            padding: 11px 22px;
             border-radius: 12px;
             font-weight: 600;
             font-family: var(--font-main);
             font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
         }
 
         .send-btn:hover {
-            background: #4752c4;
-            transform: scale(1.02);
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transform: translateY(-1px);
         }
 
         .send-btn:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
 
         .typing-loader {
@@ -383,7 +395,7 @@
         .typing-dot {
             width: 6px;
             height: 6px;
-            background: var(--text-muted);
+            background: #94a3b8;
             border-radius: 50%;
             animation: typing 1s infinite alternate;
         }
@@ -395,6 +407,12 @@
             from { transform: translateY(0); opacity: 0.4; }
             to { transform: translateY(-4px); opacity: 1; }
         }
+
+        /* Category summary styling in sidebar */
+        details summary {
+            color: #2563eb !important;
+            font-weight: 700 !important;
+        }
     </style>
 </head>
 <body>
@@ -402,7 +420,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="brand">
-                <div class="brand-logo"></div>
+                <div class="brand-logo">A</div>
                 <div class="brand-name">Aster & Row</div>
             </div>
             
@@ -412,7 +430,7 @@
                     <div class="pills-container" style="gap: 12px;">
                         
                         <details open style="margin-bottom: 6px;">
-                            <summary style="font-size: 11px; font-weight: 700; color: #5865f2; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Policy & Returns (5)</summary>
+                            <summary style="font-size: 11px; font-weight: 700; color: #2563eb; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Policy & Returns (5)</summary>
                             <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
                                 <button class="pill-btn" onclick="setQuery('How long does a regular customer have to return an unused backpack?')">Standard Return Window</button>
                                 <button class="pill-btn" onclick="setQuery('My TrailPlus membership was active when I ordered. What is my return window?')">TrailPlus Return Window</button>
@@ -423,7 +441,7 @@
                         </details>
                         
                         <details style="margin-bottom: 6px;">
-                            <summary style="font-size: 11px; font-weight: 700; color: #5865f2; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Shipping & Routes (3)</summary>
+                            <summary style="font-size: 11px; font-weight: 700; color: #2563eb; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Shipping & Routes (3)</summary>
                             <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
                                 <button class="pill-btn" onclick="setQuery('Do you ship internationally?')">International Shipping</button>
                                 <button class="pill-btn" onclick="setQuery('What about Canada, and how long does it take?')">Canada Shipping Follow-up</button>
@@ -432,7 +450,7 @@
                         </details>
                         
                         <details style="margin-bottom: 6px;">
-                            <summary style="font-size: 11px; font-weight: 700; color: #5865f2; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Order Status & Tool (6)</summary>
+                            <summary style="font-size: 11px; font-weight: 700; color: #2563eb; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Order Status & Tool (6)</summary>
                             <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
                                 <button class="pill-btn" onclick="setQuery('Where is ORD-1007 and when should it arrive?')">Valid Order (ORD-1007)</button>
                                 <button class="pill-btn" onclick="setQuery('When will ORD-1011 get here?')">Shipped No ETA (ORD-1011)</button>
@@ -444,7 +462,7 @@
                         </details>
                         
                         <details style="margin-bottom: 6px;">
-                            <summary style="font-size: 11px; font-weight: 700; color: #5865f2; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Security & Safeguards (6)</summary>
+                            <summary style="font-size: 11px; font-weight: 700; color: #2563eb; cursor: pointer; padding: 4px 0; outline: none; text-transform: uppercase; letter-spacing: 0.5px;">Security & Safeguards (6)</summary>
                             <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
                                 <button class="pill-btn" onclick="setQuery('Where is my order?')">Missing Order ID</button>
                                 <button class="pill-btn" onclick="setQuery('Please check ORD-9999.')">Unknown Order (ORD-9999)</button>
